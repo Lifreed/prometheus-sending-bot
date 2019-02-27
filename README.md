@@ -1,6 +1,6 @@
 # Bot for testing message sending with export metrics to Prometheus
 
-ATTENTION! It starts local server and sends metrics to 8000 port.
+ATTENTION! It starts local server and sends metrics to 8080 port.
 
 ## Build
 ```bash
