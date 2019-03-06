@@ -48,7 +48,7 @@ if __name__ == '__main__':
         os.environ.get('SECOND_BOT_TOKEN')  # 95f65e69776b5ac23931e11794b0ed4c17147c61
     )
 
-    bot2_peer = bot1.users.find_user_outpeer_by_nick(bot2.user_info.user.name)
+    bot2_peer = bot1.users.find_user_outpeer_by_nick(bot2.user_info.user.data.nick.value)
     bot2.messaging.on_message_async(on_msg_bot2)
 
     start_http_server(8080)
