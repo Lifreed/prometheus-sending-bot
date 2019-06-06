@@ -37,8 +37,6 @@ spec:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-  externalIPs:
-  - 139.59.202.125
 
 apiVersion: extensions/v1beta1
 kind: Ingress
