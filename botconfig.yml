@@ -34,3 +34,5 @@ spec:
   ports:
   - protocol: TCP
     port: 8080
+  externalIPs:
+  - 139.59.202.125
