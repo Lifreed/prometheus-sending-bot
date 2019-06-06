@@ -23,7 +23,7 @@ spec:
             - name: BOT_ENDPOINT
               value: $BOT_ENDPOINT
           ports:
-            - containerPort: 8080 
+            - containerPort: 8080
 apiVersion: v1
 kind: Service
 metadata:
@@ -39,3 +39,16 @@ spec:
     targetPort: 8080
   externalIPs:
   - 139.59.202.125
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: $IMAGE_NAME
+spec:
+  rules:
+  - http:
+     paths:
+     - path: /
+       backend:
+        serviceName: $IMAGE_NAME
+        servicePort: 8080
