@@ -1,5 +1,4 @@
 apiVersion: apps/v1
-
 kind: Deployment
 metadata:
   name: $IMAGE_NAME
@@ -23,6 +22,7 @@ spec:
               value: $SECOND_BOT_TOKEN
             - name: BOT_ENDPOINT
               value: $BOT_ENDPOINT
+apiVersion: v1
 kind: Service
 metadata:
   labels:
