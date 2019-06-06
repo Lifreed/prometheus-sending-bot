@@ -16,7 +16,9 @@ spec:
           image: dialogs/prometheus-sending-bot
           command: ["python3", "/tmp/main.py"]
           env:
-            - name: BOT_TOKEN
-              value: $BOT_TOKEN
+            - name: FIRST_BOT_TOKEN
+              value: $FIRST_BOT_TOKEN
+            - name: SECOND_BOT_TOKEN
+              value: $SECOND_BOT_TOKEN
             - name: BOT_ENDPOINT
               value: $BOT_ENDPOINT
