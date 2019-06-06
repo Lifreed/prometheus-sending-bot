@@ -1,4 +1,5 @@
 apiVersion: apps/v1
+
 kind: Deployment
 metadata:
   name: $IMAGE_NAME
@@ -22,3 +23,14 @@ spec:
               value: $SECOND_BOT_TOKEN
             - name: BOT_ENDPOINT
               value: $BOT_ENDPOINT
+kind: Service
+metadata:
+  labels:
+    app: $IMAGE_NAME
+  name: $IMAGE_NAME
+spec:
+  selector:
+    app: $IMAGE_NAME
+  ports:
+  - protocol: TCP
+    port: 8080
