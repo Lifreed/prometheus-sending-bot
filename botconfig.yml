@@ -22,6 +22,8 @@ spec:
               value: $SECOND_BOT_TOKEN
             - name: BOT_ENDPOINT
               value: $BOT_ENDPOINT
+          ports:
+            - containerPort: 8080 
 apiVersion: v1
 kind: Service
 metadata:
@@ -34,5 +36,6 @@ spec:
   ports:
   - protocol: TCP
     port: 8080
+    targetPort: 8080
   externalIPs:
   - 139.59.202.125
