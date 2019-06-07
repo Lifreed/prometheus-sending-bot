@@ -47,6 +47,7 @@ jobs:
                 command: |
                     ./kubectl delete service/$IMAGE_NAME
                     ./kubectl expose deployment/$IMAGE_NAME --type="NodePort" --port 8080
+                    ./kubectl get services
 workflows:
   version: 2
   build_test_deploy:
