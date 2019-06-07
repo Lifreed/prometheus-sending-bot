@@ -48,3 +48,31 @@ spec:
       backend:
             serviceName: prometheus-sending-bot
             servicePort: 8080
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: ingress-prometheus
+  namespace: default
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: prometheus-sending-bot
+  ports:
+    - name: prometheus
+      port: 80
+      targetPort: 8080
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-prometheus
+spec:
+  rules:
+  - host: 139.59.202.125
+    http:
+      paths:
+      - backend:
+          serviceName: prometheus-sending-bot
+          servicePort: 80
