@@ -5,17 +5,22 @@ import time
 import os
 import random
 
+
 REQUEST_TIME = Gauge('message_send_receive_seconds', 'Time spent processing request')
 received = False
 
 
-@REQUEST_TIME.time()
 def send(peer, message):
     global received
+    start_time = time.time()
     bot1.messaging.send_message(peer, message)
     print('message sent:', message)
     while True:
+        if time.time() - start_time >= 10:
+            REQUEST_TIME.set(1000)
+            break
         if received:
+            REQUEST_TIME.set(time.time() - start_time)
             break
 
 
