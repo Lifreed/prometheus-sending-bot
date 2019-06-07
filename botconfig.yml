@@ -41,8 +41,10 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: $IMAGE_NAME
+  name: prometheus-bot
 spec:
-  backend:
-    serviceName: $IMAGE_NAME
-    servicePort: 8080
+  rules:
+    - path: /
+      backend:
+            serviceName: prometheus-sending-bot
+            servicePort: 8080
