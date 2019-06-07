@@ -38,15 +38,11 @@ spec:
     port: 8080
     targetPort: 8080
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: $IMAGE_NAME
 spec:
-  rules:
-  - http:
-     paths:
-     - path: /
-       backend:
-        serviceName: $IMAGE_NAME
-        servicePort: 8080
+  backend:
+    serviceName: $IMAGE_NAME
+    servicePort: 8080
