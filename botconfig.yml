@@ -27,52 +27,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: $IMAGE_NAME
   name: $IMAGE_NAME
 spec:
-  selector:
-    app: $IMAGE_NAME
-  ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
-
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: prometheus-bot
-spec:
-  rules:
-    - path: /
-      backend:
-            serviceName: prometheus-sending-bot
-            servicePort: 8080
-
-kind: Service
-apiVersion: v1
-metadata:
-  name: ingress-prometheus
-  namespace: default
-spec:
-  externalTrafficPolicy: Local
   type: LoadBalancer
-  selector:
-    app.kubernetes.io/name: prometheus-sending-bot
   ports:
-    - name: prometheus
+    - protocol: TCP
       port: 80
       targetPort: 8080
-
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: ingress-prometheus
-spec:
-  rules:
-  - host: 139.59.202.125
-    http:
-      paths:
-      - backend:
-          serviceName: prometheus-sending-bot
-          servicePort: 80
+      name: http
+  selector:
+    app: $IMAGE_NAME
