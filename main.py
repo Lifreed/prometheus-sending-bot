@@ -1,9 +1,12 @@
-from dialog_bot_sdk.bot import DialogBot
-import grpc
+from core import SDK
+from dialog_api import messaging_pb2, sequence_and_updates_pb2
 from prometheus_client import start_http_server, Gauge
 import time
+import datetime as dt
 import os
 import random
+from google.protobuf import empty_pb2
+from threading import Thread
 
 
 REQUEST_TIME = Gauge('message_send_receive_seconds', 'Time spent processing request')
@@ -11,24 +14,18 @@ received = False
 
 
 def send(peer, message):
-    global received
-    start_time = time.time()
-    bot1.messaging.send_message(peer, message)
-    print('message sent:', message)
-    while True:
-        if time.time() - start_time >= 10:
-            REQUEST_TIME.set(1000)
-            break
-        if received:
-            REQUEST_TIME.set(time.time() - start_time)
-            break
+    msg = messaging_pb2.MessageContent()
+    msg.textMessage.text = message
 
+    bot1.messaging.SendMessage(
+        messaging_pb2.RequestSendMessage(
+            peer=peer,
+            deduplication_id=random.randint(0, 100000000),
+            message=msg
+            )
+        )
 
-def on_msg_bot2(*params):
-    global received
-    if params[0].message.textMessage.text == message_text:
-        print('message received:', params[0].message.textMessage.text)
-        received = True
+    print('message sent ' + str(dt.datetime.now()) + ':', message)
 
 
 def gen_random_message(length=20):
@@ -40,26 +37,55 @@ def gen_random_message(length=20):
     return result
 
 
+def seq_handler():
+    global received
+    for update in bot2.updates.SeqUpdates(empty_pb2.Empty()):
+        up = sequence_and_updates_pb2.UpdateSeqUpdate()
+        up.ParseFromString(update.update.value)
+        if up.updateMessage.message.textMessage.text == message_text:
+            received = True
+            break
+
+
 if __name__ == '__main__':
-    bot1 = DialogBot.get_secure_bot(
-        os.environ.get('BOT_ENDPOINT'),  # grpc-test.transmit.im:9443
-        grpc.ssl_channel_credentials(),  # SSL credentials (empty by default!)
-        os.environ.get('FIRST_BOT_TOKEN')  # b7cc677c0eee2743c496b8f949a14a82a83be8c9
-    )
+    bot1 = SDK(os.environ.get('BOT_ENDPOINT'))
+    bot2 = SDK(os.environ.get('BOT_ENDPOINT'))
 
-    bot2 = DialogBot.get_secure_bot(
-        os.environ.get('BOT_ENDPOINT'),  # grpc-test.transmit.im:9443
-        grpc.ssl_channel_credentials(),  # SSL credentials (empty by default!)
-        os.environ.get('SECOND_BOT_TOKEN')  # 95f65e69776b5ac23931e11794b0ed4c17147c61
-    )
-
-    bot2_peer = bot1.users.find_user_outpeer_by_nick(bot2.user_info.user.data.nick.value)
-    bot2.messaging.on_message_async(on_msg_bot2)
+    token1 = os.environ.get('FIRST_BOT_TOKEN')
+    token2 = os.environ.get('SECOND_BOT_TOKEN')
 
     start_http_server(8080)
 
+    counter = 0
     while True:
-        received = False
-        message_text = gen_random_message()
-        send(bot2_peer, message_text)
-        time.sleep(1)
+        try:
+            print('counter =', counter, dt.datetime.now())
+            counter += 1
+            received = False
+            message_text = gen_random_message()
+
+            bot1_user_info = bot1.bot_authorize(token1)
+            bot2_user_info = bot2.bot_authorize(token2)
+
+            bot2_outpeer = bot1.find_user_outpeer_by_nick(bot2_user_info.user.data.nick.value)
+
+            bot2_thread = Thread(target=seq_handler).start()
+
+            start_time = time.time()
+            send(bot2_outpeer, message_text)
+
+            while True:
+                if time.time() - start_time >= 10:
+                    REQUEST_TIME.set(1000)
+                    break
+                if received:
+                    print('message received ' + str(dt.datetime.now()) + ':', message_text)
+                    REQUEST_TIME.set(time.time() - start_time)
+                    break
+
+            bot1.logout()
+            bot2.logout()
+            time.sleep(1)
+        except Exception as e:
+            print(e)
+            continue

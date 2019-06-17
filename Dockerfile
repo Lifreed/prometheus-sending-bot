@@ -8,7 +8,7 @@ ENV SECOND_BOT_TOKEN=$SECOND_BOT_TOKEN
 
 WORKDIR "/tmp"
 
-RUN python3 -m pip install dialog_bot_sdk==2.1.1 prometheus-client
+RUN python3 -m pip install dialog_api prometheus-client
 
 COPY . /tmp
 
