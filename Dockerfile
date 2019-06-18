@@ -8,8 +8,10 @@ ENV SECOND_BOT_TOKEN=$SECOND_BOT_TOKEN
 
 WORKDIR "/tmp"
 
-RUN python3 -m pip install dialog_api prometheus-client
-
 COPY . /tmp
+
+RUN python3 -m pip install -r requirements.txt
+
+EXPOSE 8080
 
 CMD ["python3", "/tmp/main.py"]
