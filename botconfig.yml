@@ -37,7 +37,7 @@ spec:
   type: ClusterIP
   ports:
     - port: 8080
-      targetPort: http
+      targetPort: 8080
       name: http
   selector:
     app: $IMAGE_NAME
