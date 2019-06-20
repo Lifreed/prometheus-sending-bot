@@ -4,16 +4,13 @@ metadata:
   name: $IMAGE_NAME
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: $IMAGE_NAME
   template:
     metadata:
       labels:
         app: $IMAGE_NAME
     spec:
       containers:
-        - name: nginx
+        - name: $IMAGE_NAME
           image: $COMPANY_NAME/$IMAGE_NAME
           command: ["python3", "/tmp/main.py"]
           env:
