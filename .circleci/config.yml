@@ -41,8 +41,8 @@ jobs:
                     envsubst < botconfig.yml > botconfig_out.yml
             - run:
                 name: Deploy to DigitalOcean
-                command: ./kubectl apply -f botconfig_out.yml
-            
+                command: ./kubectl apply -f botconfig_out.yml --force
+
 workflows:
   version: 2
   build_test_deploy:
