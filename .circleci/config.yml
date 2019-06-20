@@ -41,6 +41,7 @@ jobs:
                     mkdir kube
                     envsubst < botconfig_deployment.yml > ./kube/botconfig_deployment_out.yml
                     envsubst < botconfig_service.yml > ./kube/botconfig_service_out.yml
+                    envsubst < botconfig_ingress.yml > ./kube/botconfig_ingress_out.yml
             - run:
                 name: Deploy to DigitalOcean
                 command: ./kubectl apply -f ./kube/ --force
