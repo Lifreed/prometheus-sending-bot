@@ -44,7 +44,10 @@ jobs:
                     envsubst < botconfig_ingress.yml > ./kube/botconfig_ingress_out.yml
             - run:
                 name: Deploy to DigitalOcean
-                command: ./kubectl apply -f ./kube/ --force
+                command: |
+                    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
+                    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
+                    ./kubectl apply -f ./kube/ --force
 
 workflows:
   version: 2
