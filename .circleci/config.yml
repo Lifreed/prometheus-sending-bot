@@ -40,7 +40,6 @@ jobs:
                 command: |
                     mkdir kube
                     envsubst < botconfig_deployment.yml > ./kube/botconfig_deployment_out.yml
-                    envsubst < botconfig_service.yml > ./kube/botconfig_service_out.yml
             - run:
                 name: Deploy to DigitalOcean
                 command: |

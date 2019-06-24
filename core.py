@@ -57,6 +57,7 @@ class SDK:
         return registration_response.token
 
     def bot_authorize(self, token):
+        self.token = self.get_session_token()
         return self.auth.StartTokenAuth(
             authentication_pb2.RequestStartTokenAuth(
                 token=token,
